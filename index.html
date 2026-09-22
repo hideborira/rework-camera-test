@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <title>再製作申請 OCRカメラ試作</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans JP",
+        sans-serif;
+      background: #07111f;
+      color: #fff;
+    }
+
+    .header {
+      background: #ffffff;
+      color: #123b76;
+      padding: 14px 12px;
+      text-align: center;
+      font-weight: 900;
+      font-size: 20px;
+      border-bottom: 4px solid #1769d2;
+    }
+
+    .sub {
+      text-align: center;
+      padding: 10px 12px;
+      font-size: 14px;
+      line-height: 1.5;
+      background: #10223b;
+    }
+
+    .camera-wrap {
+      position: relative;
+      width: 100%;
+      background: #000;
+      overflow: hidden;
+    }
+
+    video {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 55vh;
+      max-height: 72vh;
+      object-fit: cover;
+      background: #000;
+    }
+
+    /* 作業指示書全体を合わせる外枠 */
+    .sheet-frame {
+      position: absolute;
+      left: 4%;
+      right: 4%;
+      top: 8%;
+      bottom: 8%;
+      border: 3px solid rgba(255,255,255,.95);
+      pointer-events: none;
+    }
+
+    /* 四隅 */
+    .corner {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-color: #ff2449;
+      border-style: solid;
+      pointer-events: none;
+    }
+
+    .tl {
+      left: 3%;
+      top: 7%;
+      border-width: 5px 0 0 5px;
+    }
+
+    .tr {
+      right: 3%;
+      top: 7%;
+      border-width: 5px 5px 0 0;
+    }
+
+    .bl {
+      left: 3%;
+      bottom: 7%;
+      border-width: 0 0 5px 5px;
+    }
+
+    .br {
+      right: 3%;
+      bottom: 7%;
+      border-width: 0 5px 5px 0;
+    }
+
+    .guide {
+      position: absolute;
+      border: 3px solid;
+      border-radius: 7px;
+      font-weight: 900;
+      font-size: clamp(12px, 3.2vw, 18px);
+      padding: 3px 7px;
+      background: rgba(0,0,0,.25);
+      text-shadow: 0 1px 3px #000;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    /* ① 指示No. */
+    .g1 {
+      color: #ffffff;
+      border-color: #1674ff;
+      background: rgba(22,116,255,.45);
+      top: 18%;
+      left: 53%;
+      width: 23%;
+    }
+
+    /* ② 製番 */
+    .g2 {
+      color: #ffffff;
+      border-color: #10a65a;
+      background: rgba(16,166,90,.45);
+      top: 18%;
+      left: 77%;
+      width: 19%;
+    }
+
+    /* ③ 品番 */
+    .g3 {
+      color: #ffffff;
+      border-color: #ff7a00;
+      background: rgba(255,122,0,.45);
+      top: 31%;
+      left: 39%;
+      width: 37%;
+    }
+
+    /* ④ 品名 */
+    .g4 {
+      color: #ffffff;
+      border-color: #7b2cff;
+      background: rgba(123,44,255,.45);
+      top: 42%;
+      left: 39%;
+      width: 37%;
+    }
+
+    /* ⑤ 客先 */
+    .g5 {
+      color: #ffffff;
+      border-color: #ff2ca3;
+      background: rgba(255,44,163,.45);
+      top: 42%;
+      left: 77%;
+      width: 19%;
+    }
+
+    .controls {
+      padding: 14px;
+      background: #07111f;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      padding: 17px 10px;
+      margin-bottom: 10px;
+      font-size: 20px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    #startBtn {
+      background: linear-gradient(90deg, #1976d2, #43a5ef);
+      color: #fff;
+    }
+
+    #shotBtn {
+      background: linear-gradient(90deg, #00a95c, #32d17d);
+      color: #fff;
+      display: none;
+    }
+
+    #retryBtn {
+      background: #e9eef5;
+      color: #26394d;
+      display: none;
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      padding: 10px;
+      background: #fff;
+    }
+
+    .legend div {
+      text-align: center;
+      padding: 8px 2px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .l1 { color:#1264ce; border:2px solid #1674ff; }
+    .l2 { color:#087d43; border:2px solid #10a65a; }
+    .l3 { color:#d55e00; border:2px solid #ff7a00; }
+    .l4 { color:#6320cf; border:2px solid #7b2cff; }
+    .l5 { color:#d80079; border:2px solid #ff2ca3; }
+
+    #status {
+      text-align: center;
+      padding: 8px;
+      color: #bcd2e8;
+      font-size: 14px;
+    }
+
+    canvas {
+      display: none;
+    }
+
+    #previewArea {
+      display: none;
+      background: #fff;
+      color: #222;
+      padding: 12px;
+    }
+
+    #previewArea h2 {
+      margin: 4px 0 10px;
+      text-align: center;
+      color: #123b76;
+    }
+
+    #preview {
+      width: 100%;
+      border-radius: 10px;
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    METAL ENGINEER<br>
+    再製作申請 OCRカメラ試作
+  </div>
+
+  <div class="sub">
+    5色のガイドに作業指示書の各項目を合わせてください。
+  </div>
+
+  <div class="camera-wrap" id="cameraWrap">
+
+    <video id="video" autoplay playsinline muted></video>
+
+    <div class="sheet-frame"></div>
+
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+
+    <div class="guide g1">① 指示No.</div>
+    <div class="guide g2">② 製番</div>
+    <div class="guide g3">③ 品番</div>
+    <div class="guide g4">④ 品名</div>
+    <div class="guide g5">⑤ 客先</div>
+
+  </div>
+
+  <div class="legend">
+    <div class="l1">①<br>指示No.</div>
+    <div class="l2">②<br>製番</div>
+    <div class="l3">③<br>品番</div>
+    <div class="l4">④<br>品名</div>
+    <div class="l5">⑤<br>客先</div>
+  </div>
+
+  <div class="controls">
+
+    <button id="startBtn">
+      📷 カメラを起動
+    </button>
+
+    <button id="shotBtn">
+      📸 撮影
+    </button>
+
+    <button id="retryBtn">
+      ↩️ 撮り直す
+    </button>
+
+    <div id="status">
+      「カメラを起動」を押してください。
+    </div>
+
+  </div>
+
+  <canvas id="canvas"></canvas>
+
+  <div id="previewArea">
+    <h2>撮影画像</h2>
+    <img id="preview" alt="撮影画像">
+  </div>
+
+
+<script>
+
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+
+const startBtn = document.getElementById("startBtn");
+const shotBtn = document.getElementById("shotBtn");
+const retryBtn = document.getElementById("retryBtn");
+
+const statusText = document.getElementById("status");
+
+const cameraWrap = document.getElementById("cameraWrap");
+const previewArea = document.getElementById("previewArea");
+const preview = document.getElementById("preview");
+
+let stream = null;
+
+
+/* =========================
+   カメラ起動
+========================= */
+
+async function startCamera() {
+
+  statusText.textContent = "カメラを起動しています…";
+
+  try {
+
+    if (!navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia) {
+
+      throw new Error(
+        "このブラウザではカメラ機能を利用できません。"
+      );
+
+    }
+
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+
+    /*
+      背面カメラを優先。
+      exact にしないことで、
+      iPhone / Android等での互換性を上げる。
+    */
+    const constraints = {
+      audio: false,
+      video: {
+        facingMode: {
+          ideal: "environment"
+        },
+        width: {
+          ideal: 1920
+        },
+        height: {
+          ideal: 1080
+        }
+      }
+    };
+
+    stream =
+      await navigator.mediaDevices.getUserMedia(constraints);
+
+    video.srcObject = stream;
+
+    await video.play();
+
+    startBtn.style.display = "none";
+    shotBtn.style.display = "block";
+    retryBtn.style.display = "none";
+
+    cameraWrap.style.display = "block";
+    previewArea.style.display = "none";
+
+    statusText.textContent =
+      "5色のガイドに合わせて「撮影」を押してください。";
+
+  } catch (error) {
+
+    console.error(error);
+
+    statusText.textContent =
+      "カメラを起動できませんでした。ブラウザのカメラ許可を確認してください。";
+
+  }
+}
+
+
+/* =========================
+   撮影
+========================= */
+
+function takePhoto() {
+
+  if (!video.videoWidth || !video.videoHeight) {
+    statusText.textContent =
+      "カメラ映像の準備ができていません。";
+    return;
+  }
+
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  const ctx = canvas.getContext("2d");
+
+  ctx.drawImage(
+    video,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  /*
+    JPEG化
+    後でこの画像をGAS OCRへ送れる。
+  */
+  const imageData =
+    canvas.toDataURL("image/jpeg", 0.88);
+
+  preview.src = imageData;
+
+  cameraWrap.style.display = "none";
+  previewArea.style.display = "block";
+
+  shotBtn.style.display = "none";
+  retryBtn.style.display = "block";
+
+  statusText.textContent =
+    "撮影できました。画像を確認してください。";
+
+}
+
+
+/* =========================
+   撮り直し
+========================= */
+
+function retryPhoto() {
+
+  previewArea.style.display = "none";
+  cameraWrap.style.display = "block";
+
+  shotBtn.style.display = "block";
+  retryBtn.style.display = "none";
+
+  statusText.textContent =
+    "5色のガイドに合わせて撮影してください。";
+
+}
+
+
+/* =========================
+   ボタン
+========================= */
+
+startBtn.addEventListener(
+  "click",
+  startCamera
+);
+
+shotBtn.addEventListener(
+  "click",
+  takePhoto
+);
+
+retryBtn.addEventListener(
+  "click",
+  retryPhoto
+);
+
+
+/* =========================
+   ページ終了時
+========================= */
+
+window.addEventListener(
+  "pagehide",
+  () => {
+
+    if (stream) {
+
+      stream
+        .getTracks()
+        .forEach(track => track.stop());
+
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
