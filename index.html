@@ -11,7 +11,6 @@
   <title>再製作申請 OCRカメラ試作</title>
 
   <style>
-
     * {
       box-sizing: border-box;
     }
@@ -27,616 +26,401 @@
         "Segoe UI",
         "Noto Sans JP",
         sans-serif;
-
       background: #07111f;
       color: #fff;
     }
 
-
-    /* =========================
-       タイトル
-    ========================= */
-
     .header {
-      background: #ffffff;
+      background: #fff;
       color: #123b76;
-
       padding: 12px 10px;
-
       text-align: center;
-
       font-weight: 900;
-
       font-size: 20px;
-
       border-bottom: 4px solid #1769d2;
     }
 
-
     .sub {
       text-align: center;
-
       padding: 9px 10px;
-
       font-size: 14px;
-
       line-height: 1.4;
-
       background: #10223b;
     }
 
-
-
-    /* =========================
-       カメラエリア
-    ========================= */
-
     .camera-wrap {
       position: relative;
-
       width: 100%;
-
       background: #000;
-
       overflow: hidden;
     }
 
-
     video {
       display: block;
-
       width: 100%;
       height: auto;
-
       min-height: 55vh;
       max-height: 76vh;
-
       object-fit: cover;
-
       background: #000;
     }
 
-
-
-    /* =========================
-       作業指示書 全体ガイド
-
-       ★ 左側を詰めた
-    ========================= */
-
+    /* 作業指示書 全体ガイド */
     .sheet-frame {
       position: absolute;
-
-      /*
-        以前：left 4%
-        ↓
-        今回：left 15%
-
-        左側の無駄な撮影範囲を狭くする
-      */
-
       left: 15%;
-
       right: 3%;
-
       top: 8%;
-
       bottom: 8%;
-
-      border:
-        3px solid
-        rgba(255,255,255,.95);
-
+      border: 3px solid rgba(255,255,255,.95);
       pointer-events: none;
     }
 
-
-
-    /* =========================
-       赤い四隅
-    ========================= */
-
+    /* 赤い四隅 */
     .corner {
       position: absolute;
-
       width: 28px;
       height: 28px;
-
       border-color: #ff2449;
-
       border-style: solid;
-
       pointer-events: none;
     }
-
 
     .tl {
       left: 14%;
       top: 7%;
-
-      border-width:
-        5px 0 0 5px;
+      border-width: 5px 0 0 5px;
     }
-
 
     .tr {
       right: 2%;
       top: 7%;
-
-      border-width:
-        5px 5px 0 0;
+      border-width: 5px 5px 0 0;
     }
-
 
     .bl {
       left: 14%;
       bottom: 7%;
-
-      border-width:
-        0 0 5px 5px;
+      border-width: 0 0 5px 5px;
     }
-
 
     .br {
       right: 2%;
       bottom: 7%;
-
-      border-width:
-        0 5px 5px 0;
+      border-width: 0 5px 5px 0;
     }
 
-
-
-    /* =========================
-       5色ガイド 共通
-    ========================= */
-
+    /* 5色ガイド */
     .guide {
       position: absolute;
-
       border: 3px solid;
-
       border-radius: 7px;
-
       font-weight: 900;
-
-      font-size:
-        clamp(12px, 2.7vw, 18px);
-
+      font-size: clamp(12px, 2.7vw, 18px);
       padding: 3px 7px;
-
       color: #fff;
-
-      /*
-        塗りを以前より薄くした
-        ↓
-        指示書の文字を見やすくする
-      */
-
-      text-shadow:
-        0 1px 3px
-        rgba(0,0,0,.85);
-
+      text-shadow: 0 1px 3px rgba(0,0,0,.85);
       white-space: nowrap;
-
       pointer-events: none;
     }
 
-
-
-    /* =========================
-       ① 指示No.
-       青
-    ========================= */
-
+    /* ① 指示No. */
     .g1 {
-
       border-color: #1674ff;
-
-      background:
-        rgba(22,116,255,.28);
-
+      background: rgba(22,116,255,.28);
       top: 13%;
-
       left: 46%;
-
       width: 25%;
     }
 
-
-
-    /* =========================
-       ② 製番
-       緑
-    ========================= */
-
+    /* ② 製番 */
     .g2 {
-
       border-color: #10a65a;
-
-      background:
-        rgba(16,166,90,.28);
-
+      background: rgba(16,166,90,.28);
       top: 13%;
-
       left: 72%;
-
       width: 25%;
     }
 
-
-
-    /* =========================
-       ③ 品番
-       オレンジ
-    ========================= */
-
+    /* ③ 品番 */
     .g3 {
-
       border-color: #ff7a00;
-
-      background:
-        rgba(255,122,0,.25);
-
+      background: rgba(255,122,0,.25);
       top: 31%;
-
       left: 32%;
-
       width: 39%;
     }
 
-
-
-    /* =========================
-       ④ 品名
-       紫
-    ========================= */
-
+    /* ④ 品名 */
     .g4 {
-
       border-color: #7b2cff;
-
-      background:
-        rgba(123,44,255,.25);
-
+      background: rgba(123,44,255,.25);
       top: 42%;
-
       left: 32%;
-
       width: 39%;
     }
 
-
-
-    /* =========================
-       ⑤ 客先
-       ピンク
-    ========================= */
-
+    /* ⑤ 客先 */
     .g5 {
-
       border-color: #ff2ca3;
-
-      background:
-        rgba(255,44,163,.25);
-
+      background: rgba(255,44,163,.25);
       top: 42%;
-
       left: 72%;
-
       width: 25%;
     }
-
-
-
-    /* =========================
-       操作部
-    ========================= */
 
     .controls {
-
       padding:
         12px 14px
-        calc(
-          12px +
-          env(safe-area-inset-bottom)
-        );
-
+        calc(12px + env(safe-area-inset-bottom));
       background: #07111f;
     }
 
-
     button {
-
       width: 100%;
-
       border: none;
-
       border-radius: 16px;
-
       padding: 16px 10px;
-
       margin-bottom: 8px;
-
       font-size: 20px;
-
       font-weight: 900;
-
       cursor: pointer;
     }
 
-
-
     #startBtn {
-
-      background:
-        linear-gradient(
-          90deg,
-          #1976d2,
-          #43a5ef
-        );
-
+      background: linear-gradient(90deg, #1976d2, #43a5ef);
       color: #fff;
     }
-
-
 
     #shotBtn {
-
-      background:
-        linear-gradient(
-          90deg,
-          #00a95c,
-          #32d17d
-        );
-
+      background: linear-gradient(90deg, #00a95c, #32d17d);
       color: #fff;
-
       display: none;
     }
 
-
+    #ocrBtn {
+      background: linear-gradient(90deg, #7b2cff, #a85cff);
+      color: #fff;
+      display: none;
+    }
 
     #retryBtn {
-
       background: #e9eef5;
-
       color: #26394d;
-
       display: none;
     }
-
-
 
     #status {
-
       text-align: center;
-
       padding: 7px;
-
       color: #bcd2e8;
-
       font-size: 14px;
+      min-height: 34px;
     }
-
-
-
-    /* =========================
-       撮影画像
-    ========================= */
 
     canvas {
-
       display: none;
     }
 
-
-
     #previewArea {
-
       display: none;
-
       background: #fff;
-
       color: #222;
-
       padding: 12px;
     }
 
-
-
     #previewArea h2 {
-
       margin: 4px 0 10px;
-
       text-align: center;
-
       color: #123b76;
     }
 
-
-
     #preview {
-
       display: block;
-
       width: 100%;
-
       border-radius: 10px;
     }
 
+    /* OCR結果 */
+    #ocrResultArea {
+      display: none;
+      background: #f4f7fb;
+      color: #172b43;
+      padding: 14px;
+    }
 
+    .result-title {
+      font-size: 20px;
+      font-weight: 900;
+      text-align: center;
+      color: #123b76;
+      margin-bottom: 10px;
+    }
 
-    /* =========================
-       横向き最適化
-    ========================= */
+    .ocr-time {
+      text-align: center;
+      font-weight: 900;
+      color: #087d43;
+      margin-bottom: 12px;
+    }
+
+    .result-row {
+      display: grid;
+      grid-template-columns: 115px 1fr;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px;
+      border: 2px solid #dce5ef;
+    }
+
+    .result-label {
+      font-weight: 900;
+    }
+
+    .result-value {
+      font-size: 18px;
+      font-weight: 800;
+      word-break: break-word;
+    }
+
+    .r1 { border-left: 7px solid #1674ff; }
+    .r2 { border-left: 7px solid #10a65a; }
+    .r3 { border-left: 7px solid #ff7a00; }
+    .r4 { border-left: 7px solid #7b2cff; }
+    .r5 { border-left: 7px solid #ff2ca3; }
+
+    .missing {
+      color: #d62828;
+    }
+
+    details {
+      margin-top: 12px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    #rawText {
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    /* GAS通信用 iframe */
+    #ocrFrame {
+      display: none;
+      width: 0;
+      height: 0;
+      border: 0;
+    }
 
     @media (orientation: landscape) {
 
       .header {
-
         padding: 6px 10px;
-
         font-size: 17px;
       }
 
-
       .sub {
-
         padding: 6px 10px;
-
         font-size: 13px;
       }
 
-
       video {
-
-        height:
-          calc(
-            100vh - 150px
-          );
-
+        height: calc(100vh - 150px);
         min-height: 0;
-
         max-height: none;
-
         object-fit: cover;
       }
 
-
       .controls {
-
         padding: 7px 12px;
       }
 
-
       button {
-
         padding: 11px 8px;
-
         font-size: 18px;
-
         margin-bottom: 5px;
       }
 
-
       #status {
-
         padding: 3px;
-
         font-size: 12px;
       }
 
-
       .guide {
-
-        font-size:
-          clamp(
-            12px,
-            2vw,
-            18px
-          );
+        font-size: clamp(12px, 2vw, 18px);
       }
-
     }
-
-
-
-    /* =========================
-       縦向き
-    ========================= */
 
     @media (orientation: portrait) {
 
       .sheet-frame {
-
         left: 8%;
         right: 4%;
       }
 
-
       .tl,
       .bl {
-
         left: 7%;
       }
 
-
       .tr,
       .br {
-
         right: 3%;
       }
 
-
       .g1 {
-
+        top: 13%;
         left: 52%;
-
         width: 24%;
       }
 
-
       .g2 {
-
+        top: 13%;
         left: 77%;
-
         width: 20%;
       }
-
 
       .g3,
       .g4 {
-
         left: 39%;
-
         width: 37%;
       }
 
-
       .g5 {
-
         left: 77%;
-
         width: 20%;
       }
-
     }
-
   </style>
 </head>
 
-
-
 <body>
 
-
   <div class="header">
-
     METAL ENGINEER
     <br>
-
     再製作申請 OCRカメラ試作
-
   </div>
-
-
 
   <div class="sub">
-
-    5色のガイドに
-    作業指示書の各項目を
-    合わせてください。
-
+    5色のガイドに作業指示書の各項目を合わせてください。
   </div>
-
-
 
   <div
     class="camera-wrap"
     id="cameraWrap"
   >
-
 
     <video
       id="video"
@@ -645,107 +429,46 @@
       muted
     ></video>
 
-
-
-    <!-- 作業指示書 全体枠 -->
-
     <div class="sheet-frame"></div>
 
-
-
-    <!-- 四隅 -->
-
     <div class="corner tl"></div>
-
     <div class="corner tr"></div>
-
     <div class="corner bl"></div>
-
     <div class="corner br"></div>
 
-
-
-    <!-- 5色ガイド -->
-
-    <div class="guide g1">
-      ① 指示No.
-    </div>
-
-
-    <div class="guide g2">
-      ② 製番
-    </div>
-
-
-    <div class="guide g3">
-      ③ 品番
-    </div>
-
-
-    <div class="guide g4">
-      ④ 品名
-    </div>
-
-
-    <div class="guide g5">
-      ⑤ 客先
-    </div>
-
+    <div class="guide g1">① 指示No.</div>
+    <div class="guide g2">② 製番</div>
+    <div class="guide g3">③ 品番</div>
+    <div class="guide g4">④ 品名</div>
+    <div class="guide g5">⑤ 客先</div>
 
   </div>
-
-
-
-  <!--
-    ★以前あった
-    下の①〜⑤の説明ボタン列は
-    今回完全削除
-  -->
-
-
 
   <div class="controls">
 
-
     <button id="startBtn">
-
       📷 カメラを起動
-
     </button>
-
-
 
     <button id="shotBtn">
-
       📸 撮影
-
     </button>
 
-
+    <button id="ocrBtn">
+      🔍 OCRで読み取る
+    </button>
 
     <button id="retryBtn">
-
       ↩️ 撮り直す
-
     </button>
 
-
-
     <div id="status">
-
-      「カメラを起動」
-      を押してください。
-
+      「カメラを起動」を押してください。
     </div>
-
 
   </div>
 
-
-
   <canvas id="canvas"></canvas>
-
-
 
   <div id="previewArea">
 
@@ -760,103 +483,181 @@
 
   </div>
 
+  <div id="ocrResultArea">
 
+    <div class="result-title">
+      OCR読取結果
+    </div>
+
+    <div
+      class="ocr-time"
+      id="ocrTime"
+    ></div>
+
+    <div class="result-row r1">
+      <div class="result-label">
+        ① 指示No.
+      </div>
+      <div
+        class="result-value"
+        id="resultOrderNo"
+      ></div>
+    </div>
+
+    <div class="result-row r2">
+      <div class="result-label">
+        ② 製番
+      </div>
+      <div
+        class="result-value"
+        id="resultProductNo"
+      ></div>
+    </div>
+
+    <div class="result-row r3">
+      <div class="result-label">
+        ③ 品番
+      </div>
+      <div
+        class="result-value"
+        id="resultItemNo"
+      ></div>
+    </div>
+
+    <div class="result-row r4">
+      <div class="result-label">
+        ④ 品名
+      </div>
+      <div
+        class="result-value"
+        id="resultItemName"
+      ></div>
+    </div>
+
+    <div class="result-row r5">
+      <div class="result-label">
+        ⑤ 客先
+      </div>
+      <div
+        class="result-value"
+        id="resultCustomer"
+      ></div>
+    </div>
+
+    <details>
+      <summary>
+        OCR全文を確認
+      </summary>
+
+      <div id="rawText"></div>
+    </details>
+
+  </div>
+
+  <iframe
+    id="ocrFrame"
+    name="ocrFrame"
+  ></iframe>
 
 
 <script>
+
+/* =========================
+   GAS WebアプリURL
+========================= */
+
+const GAS_URL =
+  "https://script.google.com/macros/s/AKfycbyhbEdzuuhrvsN4e6l3Mskkdl76qizExCJ8GiX8CKzma0WVb3UKQ9P7JjCdY5ziR51s/exec";
 
 
 /* =========================
    要素取得
 ========================= */
 
-
 const video =
-  document.getElementById(
-    "video"
-  );
-
+  document.getElementById("video");
 
 const canvas =
-  document.getElementById(
-    "canvas"
-  );
-
+  document.getElementById("canvas");
 
 const startBtn =
-  document.getElementById(
-    "startBtn"
-  );
-
+  document.getElementById("startBtn");
 
 const shotBtn =
-  document.getElementById(
-    "shotBtn"
-  );
+  document.getElementById("shotBtn");
 
+const ocrBtn =
+  document.getElementById("ocrBtn");
 
 const retryBtn =
-  document.getElementById(
-    "retryBtn"
-  );
-
+  document.getElementById("retryBtn");
 
 const statusText =
-  document.getElementById(
-    "status"
-  );
-
+  document.getElementById("status");
 
 const cameraWrap =
-  document.getElementById(
-    "cameraWrap"
-  );
-
+  document.getElementById("cameraWrap");
 
 const previewArea =
-  document.getElementById(
-    "previewArea"
-  );
-
+  document.getElementById("previewArea");
 
 const preview =
-  document.getElementById(
-    "preview"
-  );
+  document.getElementById("preview");
+
+const ocrResultArea =
+  document.getElementById("ocrResultArea");
+
+const ocrTime =
+  document.getElementById("ocrTime");
+
+const resultOrderNo =
+  document.getElementById("resultOrderNo");
+
+const resultProductNo =
+  document.getElementById("resultProductNo");
+
+const resultItemNo =
+  document.getElementById("resultItemNo");
+
+const resultItemName =
+  document.getElementById("resultItemName");
+
+const resultCustomer =
+  document.getElementById("resultCustomer");
+
+const rawText =
+  document.getElementById("rawText");
 
 
 let stream = null;
 
+let capturedImageData = "";
+
+let ocrStartTime = 0;
+
+let ocrTimeoutId = null;
 
 
 /* =========================
    カメラ起動
 ========================= */
 
-
 async function startCamera() {
-
 
   statusText.textContent =
     "カメラを起動しています…";
 
-
   try {
-
 
     if (
       !navigator.mediaDevices ||
-      !navigator.mediaDevices
-        .getUserMedia
+      !navigator.mediaDevices.getUserMedia
     ) {
 
       throw new Error(
         "このブラウザではカメラ機能を利用できません。"
       );
-
     }
-
-
 
     if (stream) {
 
@@ -866,21 +667,7 @@ async function startCamera() {
           track =>
             track.stop()
         );
-
     }
-
-
-
-    /*
-      背面カメラ優先
-
-      exact にしないことで
-      iPhone
-      Android
-      その他端末でも
-      動きやすくする
-    */
-
 
     const constraints = {
 
@@ -889,298 +676,536 @@ async function startCamera() {
       video: {
 
         facingMode: {
-
-          ideal:
-            "environment"
-
+          ideal: "environment"
         },
 
         width: {
-
           ideal: 1920
-
         },
 
         height: {
-
           ideal: 1080
-
         }
-
       }
-
     };
 
-
-
     stream =
-      await navigator
-        .mediaDevices
+      await navigator.mediaDevices
         .getUserMedia(
           constraints
         );
 
-
-
     video.srcObject =
       stream;
 
-
-
     await video.play();
-
-
 
     startBtn.style.display =
       "none";
 
-
     shotBtn.style.display =
       "block";
 
+    ocrBtn.style.display =
+      "none";
 
     retryBtn.style.display =
       "none";
 
-
     cameraWrap.style.display =
       "block";
-
 
     previewArea.style.display =
       "none";
 
-
+    ocrResultArea.style.display =
+      "none";
 
     statusText.textContent =
-      "5色のガイドに合わせて「撮影」を押してください。";
+      "5色のガイドに合わせて「撮影」を押してください.";
 
+  } catch (error) {
 
-  }
-
-
-  catch (error) {
-
-
-    console.error(
-      error
-    );
-
+    console.error(error);
 
     statusText.textContent =
       "カメラを起動できませんでした。ブラウザのカメラ許可を確認してください。";
-
-
   }
-
 }
-
 
 
 /* =========================
    撮影
 ========================= */
 
-
 function takePhoto() {
-
 
   if (
     !video.videoWidth ||
     !video.videoHeight
   ) {
 
-
     statusText.textContent =
       "カメラ映像の準備ができていません。";
 
-
     return;
-
   }
-
-
 
   canvas.width =
     video.videoWidth;
 
-
   canvas.height =
     video.videoHeight;
 
-
-
   const ctx =
-    canvas.getContext(
-      "2d"
-    );
-
-
+    canvas.getContext("2d");
 
   ctx.drawImage(
-
     video,
-
     0,
-
     0,
-
     canvas.width,
-
     canvas.height
-
   );
 
-
-
-  /*
-    JPEG化
-
-    次の段階で
-    この画像をOCRへ送る
-  */
-
-
-  const imageData =
+  capturedImageData =
     canvas.toDataURL(
       "image/jpeg",
       0.88
     );
 
-
-
   preview.src =
-    imageData;
-
-
+    capturedImageData;
 
   cameraWrap.style.display =
     "none";
 
-
   previewArea.style.display =
     "block";
-
 
   shotBtn.style.display =
     "none";
 
+  ocrBtn.style.display =
+    "block";
 
   retryBtn.style.display =
     "block";
 
-
+  ocrResultArea.style.display =
+    "none";
 
   statusText.textContent =
-    "撮影できました。画像を確認してください。";
-
+    "撮影できました。画像を確認して「OCRで読み取る」を押してください。";
 }
 
+
+/* =========================
+   OCR送信
+========================= */
+
+function sendToOcr() {
+
+  if (!capturedImageData) {
+
+    statusText.textContent =
+      "撮影画像がありません。";
+
+    return;
+  }
+
+  ocrBtn.disabled = true;
+
+  retryBtn.disabled = true;
+
+  ocrBtn.textContent =
+    "⏳ OCR読取中…";
+
+  statusText.textContent =
+    "OCRで読み取っています。少しお待ちください…";
+
+  ocrResultArea.style.display =
+    "none";
+
+  ocrStartTime =
+    performance.now();
+
+
+  /*
+    data:image/jpeg;base64,
+    の前半を除去
+  */
+
+  const base64Data =
+    capturedImageData.split(",")[1];
+
+
+  /*
+    GASへ通常のHTMLフォームPOST。
+
+    targetを隠しiframeにすることで
+    GitHubページ自体は移動しない。
+  */
+
+  const form =
+    document.createElement(
+      "form"
+    );
+
+  form.method =
+    "POST";
+
+  form.action =
+    GAS_URL;
+
+  form.target =
+    "ocrFrame";
+
+  form.style.display =
+    "none";
+
+
+  addHiddenField(
+    form,
+    "action",
+    "ocr"
+  );
+
+  addHiddenField(
+    form,
+    "base64Data",
+    base64Data
+  );
+
+  addHiddenField(
+    form,
+    "fileName",
+    "rework_camera_" +
+    Date.now() +
+    ".jpg"
+  );
+
+  addHiddenField(
+    form,
+    "mimeType",
+    "image/jpeg"
+  );
+
+
+  document.body.appendChild(
+    form
+  );
+
+
+  form.submit();
+
+
+  form.remove();
+
+
+  clearTimeout(
+    ocrTimeoutId
+  );
+
+
+  ocrTimeoutId =
+    setTimeout(
+      function () {
+
+        ocrBtn.disabled =
+          false;
+
+        retryBtn.disabled =
+          false;
+
+        ocrBtn.textContent =
+          "🔍 OCRで読み取る";
+
+        statusText.textContent =
+          "OCR応答がありません。通信状況またはGASの設定を確認してください。";
+
+      },
+      60000
+    );
+}
+
+
+/* =========================
+   hidden input追加
+========================= */
+
+function addHiddenField(
+  form,
+  name,
+  value
+) {
+
+  const input =
+    document.createElement(
+      "input"
+    );
+
+  input.type =
+    "hidden";
+
+  input.name =
+    name;
+
+  input.value =
+    value;
+
+  form.appendChild(
+    input
+  );
+}
+
+
+/* =========================
+   GASから結果受信
+========================= */
+
+window.addEventListener(
+  "message",
+  function (event) {
+
+    /*
+      GAS Webアプリは
+      script.google.com または
+      googleusercontent系から
+      返ってくる場合がある。
+
+      REWORK_OCR_RESULTだけを
+      受け取る。
+    */
+
+    if (
+      !event.data ||
+      event.data.type !==
+        "REWORK_OCR_RESULT"
+    ) {
+
+      return;
+    }
+
+
+    clearTimeout(
+      ocrTimeoutId
+    );
+
+
+    ocrBtn.disabled =
+      false;
+
+    retryBtn.disabled =
+      false;
+
+    ocrBtn.textContent =
+      "🔍 OCRで読み取る";
+
+
+    const elapsed =
+      (
+        (
+          performance.now() -
+          ocrStartTime
+        ) / 1000
+      )
+      .toFixed(1);
+
+
+    const payload =
+      event.data.data;
+
+
+    if (
+      !payload ||
+      !payload.ok
+    ) {
+
+      statusText.textContent =
+        "OCRエラー：" +
+        (
+          payload &&
+          payload.message
+            ? payload.message
+            : "不明なエラー"
+        );
+
+      return;
+    }
+
+
+    const result =
+      payload.result || {};
+
+
+    setResultValue(
+      resultOrderNo,
+      result.orderNo
+    );
+
+    setResultValue(
+      resultProductNo,
+      result.productNo
+    );
+
+    setResultValue(
+      resultItemNo,
+      result.itemNo
+    );
+
+    setResultValue(
+      resultItemName,
+      result.itemName
+    );
+
+    setResultValue(
+      resultCustomer,
+      result.customer
+    );
+
+
+    rawText.textContent =
+      result.rawText || "";
+
+
+    ocrTime.textContent =
+      "OCR時間：" +
+      elapsed +
+      " 秒";
+
+
+    ocrResultArea.style.display =
+      "block";
+
+
+    statusText.textContent =
+      "OCR読取が完了しました。5項目を確認してください。";
+
+
+    ocrResultArea.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+  }
+);
+
+
+/* =========================
+   OCR結果表示
+========================= */
+
+function setResultValue(
+  element,
+  value
+) {
+
+  const text =
+    String(
+      value || ""
+    ).trim();
+
+
+  if (text) {
+
+    element.textContent =
+      text;
+
+    element.classList.remove(
+      "missing"
+    );
+
+  } else {
+
+    element.textContent =
+      "未読取";
+
+    element.classList.add(
+      "missing"
+    );
+  }
+}
 
 
 /* =========================
    撮り直し
 ========================= */
 
-
 function retryPhoto() {
-
 
   previewArea.style.display =
     "none";
 
+  ocrResultArea.style.display =
+    "none";
 
   cameraWrap.style.display =
     "block";
 
-
   shotBtn.style.display =
     "block";
 
+  ocrBtn.style.display =
+    "none";
 
   retryBtn.style.display =
     "none";
 
-
+  capturedImageData =
+    "";
 
   statusText.textContent =
     "5色のガイドに合わせて撮影してください。";
-
 }
-
 
 
 /* =========================
    ボタン
 ========================= */
 
-
 startBtn.addEventListener(
-
   "click",
-
   startCamera
-
 );
-
-
 
 shotBtn.addEventListener(
-
   "click",
-
   takePhoto
-
 );
 
-
+ocrBtn.addEventListener(
+  "click",
+  sendToOcr
+);
 
 retryBtn.addEventListener(
-
   "click",
-
   retryPhoto
-
 );
-
 
 
 /* =========================
    ページ終了時
 ========================= */
 
-
 window.addEventListener(
-
   "pagehide",
-
-  () => {
-
+  function () {
 
     if (stream) {
-
 
       stream
         .getTracks()
         .forEach(
-
           track =>
             track.stop()
-
         );
-
-
     }
-
-
   }
-
 );
-
 
 </script>
 
-
 </body>
-
 </html>
