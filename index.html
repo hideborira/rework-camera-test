@@ -210,6 +210,28 @@
       display: none;
     }
 
+    #useResultBtn {
+      margin-top: 14px;
+      background: linear-gradient(90deg, #0b8f55, #24c979);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(11,143,85,.22);
+    }
+
+    #useResultBtn:disabled {
+      opacity: .45;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .return-note {
+      margin-top: 8px;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #5d7188;
+      font-weight: 700;
+    }
+
     #status {
       text-align: center;
       padding: 7px;
@@ -552,6 +574,18 @@
       <div id="rawText"></div>
     </details>
 
+    <button
+      id="useResultBtn"
+      type="button"
+      disabled>
+      ✅ この結果を使う
+    </button>
+
+    <div class="return-note">
+      5項目を確認してから押してください。<br>
+      再製作申請画面へ戻ります。
+    </div>
+
   </div>
 
   <iframe
@@ -568,6 +602,14 @@
 
 const GAS_URL =
   "https://script.google.com/macros/s/AKfycbyhbEdzuuhrvsN4e6l3Mskkdl76qizExCJ8GiX8CKzma0WVb3UKQ9P7JjCdY5ziR51s/exec";
+
+const queryParams =
+  new URLSearchParams(
+    window.location.search
+  );
+
+const RETURN_APP_URL =
+  queryParams.get("appUrl") || "";
 
 
 /* =========================
@@ -628,6 +670,9 @@ const resultCustomer =
 const rawText =
   document.getElementById("rawText");
 
+const useResultBtn =
+  document.getElementById("useResultBtn");
+
 
 let stream = null;
 
@@ -636,6 +681,8 @@ let capturedImageData = "";
 let ocrStartTime = 0;
 
 let ocrTimeoutId = null;
+
+let latestOcrResult = null;
 
 
 /* =========================
@@ -721,6 +768,9 @@ async function startCamera() {
     ocrResultArea.style.display =
       "none";
 
+    latestOcrResult = null;
+    useResultBtn.disabled = true;
+
     statusText.textContent =
       "5色のガイドに合わせて「撮影」を押してください.";
 
@@ -794,6 +844,9 @@ function takePhoto() {
 
   ocrResultArea.style.display =
     "none";
+
+  latestOcrResult = null;
+  useResultBtn.disabled = true;
 
   statusText.textContent =
     "撮影できました。画像を確認して「OCRで読み取る」を押してください。";
@@ -1038,6 +1091,16 @@ window.addEventListener(
     const result =
       payload.result || {};
 
+    latestOcrResult = {
+      orderNo: String(result.orderNo || "").trim(),
+      productNo: String(result.productNo || "").trim(),
+      itemNo: String(result.itemNo || "").trim(),
+      itemName: String(result.itemName || "").trim(),
+      customer: String(result.customer || "").trim()
+    };
+
+    useResultBtn.disabled = false;
+
 
     setResultValue(
       resultOrderNo,
@@ -1090,6 +1153,89 @@ window.addEventListener(
 
   }
 );
+
+
+/* =========================
+   OCR結果をGAS申請画面へ返す
+========================= */
+
+function useOcrResult() {
+
+  if (!latestOcrResult) {
+    statusText.textContent =
+      "OCR結果がありません。";
+    return;
+  }
+
+  if (!RETURN_APP_URL) {
+    statusText.textContent =
+      "戻り先が設定されていません。GASの再製作申請画面からガイド付きカメラを開いてください。";
+    return;
+  }
+
+  try {
+
+    const returnUrl =
+      new URL(RETURN_APP_URL);
+
+    returnUrl.searchParams.set(
+      "ocrReturn",
+      "1"
+    );
+
+    returnUrl.searchParams.set(
+      "orderNo",
+      latestOcrResult.orderNo
+    );
+
+    returnUrl.searchParams.set(
+      "productNo",
+      latestOcrResult.productNo
+    );
+
+    returnUrl.searchParams.set(
+      "itemNo",
+      latestOcrResult.itemNo
+    );
+
+    returnUrl.searchParams.set(
+      "itemName",
+      latestOcrResult.itemName
+    );
+
+    returnUrl.searchParams.set(
+      "customer",
+      latestOcrResult.customer
+    );
+
+    if (stream) {
+      stream.getTracks().forEach(
+        track => track.stop()
+      );
+    }
+
+    useResultBtn.disabled = true;
+    useResultBtn.textContent =
+      "↩️ 申請画面へ戻っています…";
+
+    statusText.textContent =
+      "OCR結果を再製作申請画面へ渡しています…";
+
+    window.location.href =
+      returnUrl.toString();
+
+  } catch (error) {
+
+    console.error(error);
+
+    useResultBtn.disabled = false;
+    useResultBtn.textContent =
+      "✅ この結果を使う";
+
+    statusText.textContent =
+      "申請画面へ戻れませんでした。もう一度お試しください。";
+  }
+}
 
 
 /* =========================
@@ -1155,6 +1301,11 @@ function retryPhoto() {
   capturedImageData =
     "";
 
+  latestOcrResult = null;
+  useResultBtn.disabled = true;
+  useResultBtn.textContent =
+    "✅ この結果を使う";
+
   statusText.textContent =
     "5色のガイドに合わせて撮影してください。";
 }
@@ -1182,6 +1333,11 @@ ocrBtn.addEventListener(
 retryBtn.addEventListener(
   "click",
   retryPhoto
+);
+
+useResultBtn.addEventListener(
+  "click",
+  useOcrResult
 );
 
 
