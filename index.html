@@ -896,8 +896,8 @@ function sendToOcr() {
   /*
     GASへ通常のHTMLフォームPOST。
 
-    targetを隠しiframeにすることで
-    GitHubページ自体は移動しない。
+    iPhoneでiframe→postMessageが不安定だったため、
+    同じタブでGASのOCR結果ページへ移動する。
   */
 
   const form =
@@ -911,8 +911,10 @@ function sendToOcr() {
   form.action =
     GAS_URL;
 
+  // iPhoneでpostMessageが届かないことがあるため、
+  // OCR結果ページへ同じタブで移動する。
   form.target =
-    "ocrFrame";
+    "_self";
 
   form.style.display =
     "none";
@@ -942,6 +944,20 @@ function sendToOcr() {
     form,
     "mimeType",
     "image/jpeg"
+  );
+
+  // OCR後にGAS申請画面へ戻すためのURL
+  addHiddenField(
+    form,
+    "returnAppUrl",
+    RETURN_APP_URL
+  );
+
+  // OCR結果ページから撮り直せるよう現在のカメラURLも渡す
+  addHiddenField(
+    form,
+    "cameraUrl",
+    window.location.href
   );
 
 
